@@ -13,7 +13,6 @@ namespace MineSweeper
         const string RESTART_BUTTON = "Restart";
         const string BOOM_BTN_NAME = "btnBoom_";
 
-
         public static Image ImageBomb;
         public static Image ImageFlag;
         private readonly List<int> ExistingMines = new List<int>();
@@ -109,7 +108,6 @@ namespace MineSweeper
             }
         }
 
-
         public void CreateControls()
         {
             //Active the panel
@@ -183,7 +181,6 @@ namespace MineSweeper
             }
         }
 
-
         /// <summary>
         /// Calc and mark the mines around
         /// </summary>
@@ -247,13 +244,11 @@ namespace MineSweeper
             }
         }
 
-
         public void GameEndedWithWin()
         {
             MessageBox.Show("You win!", "Congratulations", MessageBoxButtons.OK, MessageBoxIcon.Information);
             pnlMain.Enabled = false;
             btnStart.Text = RESTART_BUTTON;
-
         }
 
         private void GameEndedWithBoom()
@@ -273,6 +268,5 @@ namespace MineSweeper
             pnlMain.Enabled = false;
             btnStart.Text = RESTART_BUTTON;
         }
-
     }
 }
