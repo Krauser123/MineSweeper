@@ -1,22 +1,26 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace MineSweeper
 {
-    class BombButton : Button
-    {      
-           
+    internal class BombButton : Button
+    {           
             public bool HasAMine { get; set; }
             public int AdjacentMines { get; set; }
             public bool IsRevealed { get; set; }
             public bool IsFlagged { get; set; }
 
+        /// <summary>
+        /// Change background image to display a bomb
+        /// </summary>
         internal void SetBombImage()
         {
             this.BackgroundImage = MainForm.ImageBomb;
             this.BackgroundImageLayout = ImageLayout.Stretch;
         }
 
+        /// <summary>
+        /// Change background image to display a flag
+        /// </summary>
         internal void SetFlagImage()
         {
             if (this.IsFlagged == false)
@@ -32,6 +36,9 @@ namespace MineSweeper
             }
         }
 
+        /// <summary>
+        /// Remove image for this button
+        /// </summary>
         internal void CleanImage()
         {
             this.BackgroundImage = null;

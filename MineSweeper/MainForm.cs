@@ -9,11 +9,16 @@ namespace MineSweeper
 {
     public partial class MainForm : Form
     {
+        const string START_BUTTON = "Start";
+        const string RESTART_BUTTON = "Restart";
+        const string BOOM_BTN_NAME = "btnBoom_";
+
+
         public static Image ImageBomb;
         public static Image ImageFlag;
-        private readonly List<int> existingMines = new List<int>();
-        private int numberOfMinesSetByUser = 10;
-        private int clickCounter = 0;
+        private readonly List<int> ExistingMines = new List<int>();
+        private int NumberOfMinesSetByUser = 10;
+        private int ClickCounter = 0;
 
         public MainForm()
         {
@@ -31,9 +36,9 @@ namespace MineSweeper
 
         private void StartButton_Click(object sender, EventArgs e)
         {
-            numberOfMinesSetByUser = (int)nudNumMinas.Value;
+            NumberOfMinesSetByUser = (int)nudNumMinas.Value;
 
-            if (btnStart.Text == "Start")
+            if (btnStart.Text == START_BUTTON)
             {
                 //Create controls
                 CreateControls();
@@ -41,14 +46,14 @@ namespace MineSweeper
                 //Distribute the mines
                 GenerateMineField();
 
-                btnStart.Text = "Restart";
+                btnStart.Text = RESTART_BUTTON;
             }
             else
             {
                 pnlMain.Controls.Clear();
-                existingMines.Clear();
+                ExistingMines.Clear();
 
-                this.Text = "Start";
+                this.Text = START_BUTTON;
 
                 CreateControls();
                 GenerateMineField();
@@ -58,33 +63,32 @@ namespace MineSweeper
         private void Button_MouseClick(object sender, MouseEventArgs e)
         {
             //Cast to custom class
-            BombButton button = (BombButton)sender;
+            BombButton clickedButton = (BombButton)sender;
 
             if (e.Button == MouseButtons.Right)
             {
                 //Set flag, if is flagged remove
-                button.SetFlagImage();
+                clickedButton.SetFlagImage();
             }
             else
             {
-
-                if (button.HasAMine)
+                if (clickedButton.HasAMine)
                 {
                     GameEndedWithBoom();
                 }
                 else
                 {
                     //Set as clicked
-                    button.FlatStyle = FlatStyle.Flat;
-                    button.Enabled = false;
+                    clickedButton.FlatStyle = FlatStyle.Flat;
+                    clickedButton.Enabled = false;
 
                     //Discover the squares around
-                    OpenSquaresAround(button.Name);
+                    OpenSquaresAround(clickedButton.Name);
 
                     //Increase click counter (also know as attempts)
-                    clickCounter++;
+                    ClickCounter++;
 
-                    if (clickCounter >= 10)
+                    if (ClickCounter >= 10)
                     {
                         int iNumDesac = 0;
 
@@ -124,23 +128,22 @@ namespace MineSweeper
             int locationA = 0;
             int locationB = 0;
 
-
             for (int i = 0; i <= 100; i++)
             {
-                BombButton button = new BombButton
+                BombButton currentButton = new BombButton
                 {
-                    Name = "btnBoom_" + i
+                    Name = BOOM_BTN_NAME + i
                 };
 
                 //Asign a new event handler
-                button.MouseDown += new MouseEventHandler(Button_MouseClick);
+                currentButton.MouseDown += new MouseEventHandler(Button_MouseClick);
 
-                pnlMain.Controls.Add(button);
+                pnlMain.Controls.Add(currentButton);
                 Point buttonLocation = new Point(locationA, locationB);
 
-                button.Location = buttonLocation;
-                button.Text = string.Empty;
-                button.Size = new Size(buttonSize, buttonSize);
+                currentButton.Location = buttonLocation;
+                currentButton.Text = string.Empty;
+                currentButton.Size = new Size(buttonSize, buttonSize);
 
                 //Increase counter
                 iCountParcial++;
@@ -161,23 +164,22 @@ namespace MineSweeper
 
         public void GenerateMineField()
         {
-            Random rndAlet = new Random();
-            for (int i = 0; i < numberOfMinesSetByUser; i++)
+            Random rnd = new Random();
+            for (int i = 0; i < NumberOfMinesSetByUser; i++)
             {
-
                 int iPosA;
                 do
                 {
-                    iPosA = rndAlet.Next(0, 101);
+                    iPosA = rnd.Next(0, 101);
                 }
-                while (existingMines.Contains(iPosA) == true);
+                while (ExistingMines.Contains(iPosA) == true);
 
                 //Get button by name, to place the mine
-                BombButton btnMina = (BombButton)pnlMain.Controls["btnBoom_" + iPosA];
+                BombButton btnMina = (BombButton)pnlMain.Controls[BOOM_BTN_NAME + iPosA];
                 btnMina.HasAMine = true;
 
                 //Add to existing mines
-                existingMines.Add(iPosA);
+                ExistingMines.Add(iPosA);
             }
         }
 
@@ -216,7 +218,7 @@ namespace MineSweeper
                     //Substract the number from the origin button (numberOfButton)
                     int realButtonNumber = numberOfButton + (numToSubstract);
 
-                    BombButton btnCalc = (BombButton)pnlMain.Controls["btnBoom_" + realButtonNumber];
+                    BombButton btnCalc = (BombButton)pnlMain.Controls[BOOM_BTN_NAME + realButtonNumber];
 
                     //If null not exists and continues with other
                     if (btnCalc != null)
@@ -235,7 +237,7 @@ namespace MineSweeper
                 }
 
                 //Set the number of mines around
-                BombButton currentButton = (BombButton)pnlMain.Controls["btnBoom_" + numberOfButton];
+                BombButton currentButton = (BombButton)pnlMain.Controls[BOOM_BTN_NAME + numberOfButton];
                 currentButton.Text = numberOfMinesAround.ToString();
                 currentButton.AdjacentMines = numberOfMinesAround;
             }
@@ -250,7 +252,7 @@ namespace MineSweeper
         {
             MessageBox.Show("You win!", "Congratulations", MessageBoxButtons.OK, MessageBoxIcon.Information);
             pnlMain.Enabled = false;
-            btnStart.Text = "Restart";
+            btnStart.Text = RESTART_BUTTON;
 
         }
 
@@ -261,7 +263,7 @@ namespace MineSweeper
             for (int i = 0; i < 100; i++)
             {
                 //Set bomb image when the button have mines
-                BombButton currentButton = (BombButton)pnlMain.Controls["btnBoom_" + i];
+                BombButton currentButton = (BombButton)pnlMain.Controls[BOOM_BTN_NAME + i];
                 if (currentButton.HasAMine)
                 {
                     currentButton.SetBombImage();
@@ -269,7 +271,7 @@ namespace MineSweeper
             }
 
             pnlMain.Enabled = false;
-            btnStart.Text = "Restart";
+            btnStart.Text = RESTART_BUTTON;
         }
 
     }
