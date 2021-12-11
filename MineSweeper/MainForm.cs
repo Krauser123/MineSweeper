@@ -31,6 +31,7 @@ namespace MineSweeper
             Stream streamFlag = mineSweeperAssembly.GetManifestResourceStream("MineSweeper.flag.png");
             ImageBomb = Image.FromStream(streamBomb);
             ImageFlag = Image.FromStream(streamFlag);
+            nudNumMinas.Value = NumberOfMinesSetByUser;
         }
 
         private void StartButton_Click(object sender, EventArgs e)
@@ -89,17 +90,17 @@ namespace MineSweeper
 
                     if (ClickCounter >= 10)
                     {
-                        int iNumDesac = 0;
+                        int iNumTilesDesactivatePending = 0;
 
                         foreach (Button buttonInPanel in pnlMain.Controls)
                         {
-                            if (buttonInPanel.Enabled == false)
+                            if (buttonInPanel.Enabled == true)
                             {
-                                iNumDesac++;
+                                iNumTilesDesactivatePending++;
                             }
                         }
 
-                        if (iNumDesac == 100)
+                        if (iNumTilesDesactivatePending == NumberOfMinesSetByUser)
                         {
                             GameEndedWithWin();
                         }
@@ -108,6 +109,9 @@ namespace MineSweeper
             }
         }
 
+        /// <summary>
+        /// Draw boards
+        /// </summary>
         public void CreateControls()
         {
             //Active the panel
@@ -244,6 +248,9 @@ namespace MineSweeper
             }
         }
 
+        /// <summary>
+        /// Player wins
+        /// </summary>
         public void GameEndedWithWin()
         {
             MessageBox.Show("You win!", "Congratulations", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -251,6 +258,9 @@ namespace MineSweeper
             btnStart.Text = RESTART_BUTTON;
         }
 
+        /// <summary>
+        /// Player loose show all bombs in board
+        /// </summary>
         private void GameEndedWithBoom()
         {
             MessageBox.Show("Try again!", "Boom!", MessageBoxButtons.OK, MessageBoxIcon.Error);
